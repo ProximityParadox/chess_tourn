@@ -15,7 +15,7 @@ function testcase(){
     return t_array
 }
 
-test.push(testcase())
+//test.push(testcase())
 
 fs.writeFile("test.json", JSON.stringify(test), err => {
      
@@ -25,7 +25,10 @@ fs.writeFile("test.json", JSON.stringify(test), err => {
     console.log("Done writing"); // Success
 });
 
-
+function please(){
+    console.log("hello")
+}
+please()
 
 // Read users.json file
 fs.readFile("test.json", function(err, data) {
