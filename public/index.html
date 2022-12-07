@@ -8,19 +8,44 @@
 </head>
 <body>
 
-    <form method ="post" autocomplete="off">
-        name<input type="text" id = "name">
+        <input type="text" id = "name" autocomplete="off" placeholder = "name" required>
         <br>
+        <input type="email" id = "email" autocomplete="off" placeholder="email" required>
         <br>
-        fakepass<input type="password">
-        <input type="submit" id="submit">
-    </form>
+        <input type="password" id = "pass" autocomplete="off" placeholder="pass" required>
+        <br>
+        <button id="submit">submit</button>
+
     
     
     <script>
-    console.log("test")
 
-    //document.getElementById()
+
+    document.querySelector("button").addEventListener("click", (e) =>{e.preventDefault()
+    let name = document.getElementById("name").value
+    let email = document.getElementById("email").value
+    let password = document.getElementById("pass").value
+
+    let data = {name, email, password}
+
+    let handleformdata = async() => {
+        let sent = await fetch("/register", {
+            method: "post",
+            headers:{
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+        try {
+            let response = await sent.json()
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+
+    handleformdata()
+    })
 
     </script>
 </body>
