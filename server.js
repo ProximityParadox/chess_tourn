@@ -1,27 +1,52 @@
-const express = require('express');
+import express, { json } from 'express';
 var app = express()
-const path = require('path');
-//const http = require("http")
-const test = require("./test.json");
-const fs = require("fs");
-const { body, validationResult } = require("express-validator");
+import { join } from 'path';
+//import test from "./test.json" assert {type: "json"};
+//import fs from "fs";
+//import { body, validationResult } from "express-validator";
+//import argon2 from 'argon2';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+
+const __dirname = path.dirname(__filename);
 
 
+async function hashit(UP_Pass){
+try {
+  let pre_hash_time = Date.now();
+  const hash = await argon2.hash(UP_Pass,{
+    type: argon2.argon2id,
+    parallelism: 7,
+    memoryCost: 185360,
+    timeCost: 6
+  });
+  
+  let post_hash_time = Date.now();
+  console.log(hash)
+  console.log((post_hash_time-pre_hash_time)/1000 + "s")
+} 
 
+catch (err) { 
+  console.log(err)
+  //...
+}
+}
 
-app.use(express.json({extended: true, limit: '1mb'}))
+app.use(json({extended: true, limit: '1mb'}))
 
 const port = process.env.PORT || 8080;
 
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, './public/index.html'));
+    res.sendFile(join(__dirname, './public/index.html'));
     console.log("Successful client connection")
   });
 
   app.post('/register',
   body("name", "Empty name").trim().isLength({ min: 1 }).escape(),
-  body('email').isEmail().normalizeEmail(),
-   body("password").isLength({min:6}),
+  body('email', "Not an email").isEmail().normalizeEmail(),
+  body("password", "Password is too short, min 6 characters").trim().isLength({min:6}).escape(),
 
    (req, res) => {
     let errors = validationResult(req)
@@ -33,8 +58,10 @@ app.get('/', function(req, res) {
         git: "gud"
       })
     }
+    
     console.log("Successful client data submission")
     console.log(req.body)
+
     // send acceptance code
     res.status(202).json({success: true})
       })
