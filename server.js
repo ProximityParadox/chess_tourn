@@ -1,10 +1,10 @@
 import express, { json } from 'express';
 var app = express()
 import { join } from 'path';
-//import test from "./test.json" assert {type: "json"};
-//import fs from "fs";
-//import { body, validationResult } from "express-validator";
-//import argon2 from 'argon2';
+import test from "./test.json" assert {type: "json"};
+import fs from "fs";
+import { body, validationResult } from "express-validator";
+import argon2 from 'argon2';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
