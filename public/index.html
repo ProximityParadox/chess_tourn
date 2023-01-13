@@ -7,27 +7,42 @@
     <title>Document</title>
 </head>
 <body>
+    <div id = "register">
+        <input type="text" id = "register_name" autocomplete="off" placeholder = "name" required>
+        <br>
+        <input type="email" id = "register_email" autocomplete="off" placeholder="email" required>
+        <br>
+        <input type="password" id = "register_pass" autocomplete="off" placeholder="pass" required>
+        <br>
+        <button id="submit_register">submit</button>
+        <br>
+        <p id = "failure_display_register"></p>
+    </div>
 
-        <input type="text" id = "name" autocomplete="off" placeholder = "name" required>
+    <div id = "login">
+        <input type="text" id = "login_name" autocomplete="off" placeholder = "name" required>
         <br>
-        <input type="email" id = "email" autocomplete="off" placeholder="email" required>
+        <input type="password" id = "login_pass" autocomplete="off" placeholder="pass" required>
         <br>
-        <input type="password" id = "pass" autocomplete="off" placeholder="pass" required>
+        <button id="submit_login">submit</button>
         <br>
-        <button id="submit">submit</button>
-
-    
+        <p id = "failure_display_login"></p>
+    </div>
     
     <script>
 
-    document.querySelector("button").addEventListener("click", (e) =>{e.preventDefault()
-    let name = document.getElementById("name").value
-    let email = document.getElementById("email").value
-    let password = document.getElementById("pass").value
+    document.getElementById("submit_register").addEventListener("click", (e) =>{e.preventDefault()
+        document.getElementById("submit_register").disabled = true
+        setTimeout(function(){
+        document.getElementById("submit_register").disabled = false
+    }, 3000)
+    let name = document.getElementById("register_name").value
+    let email = document.getElementById("register_email").value
+    let password = document.getElementById("register_pass").value
 
     let data = {name, email, password}
 
-    let handleformdata = async() => {
+    let Handle_Register_Form_Data = async() => {
         let sent = await fetch("/register", {
             method: "post",
             headers:{
@@ -36,15 +51,56 @@
             body: JSON.stringify(data)
         })
         try {
-            let response = await sent.json()
+        await sent.json().then(function(res){
+            document.getElementById("failure_display_register").innerHTML = JSON.stringify(res.errors[0].msg)
+            })
         }
         catch(error){
             console.log(error)
         }
     }
 
-    handleformdata()
+    Handle_Register_Form_Data()
     })
+
+    document.getElementById("submit_login").addEventListener("click", (e) =>{e.preventDefault()
+        document.getElementById("submit_login").disabled = true
+        setTimeout(function(){
+        document.getElementById("submit_login").disabled = false
+    }, 3000)
+    let name = document.getElementById("login_name").value
+    let password = document.getElementById("login_pass").value
+
+    let data = {name, password}
+
+    let Handle_Login_Form_Data = async() => {
+        let sent = await fetch("/login", {
+            method: "post",
+            headers:{
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+        try {
+        await sent.json().then(function(res){
+
+            //console.log(res.errors[0].msg)
+
+            try{
+            document.getElementById("failure_display_login").innerHTML = JSON.stringify(res.status)
+            document.getElementById("failure_display_login").innerHTML = JSON.stringify(res.errors[0].msg)
+            }
+            catch{}
+            })
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+
+    Handle_Login_Form_Data()
+    })
+
 
     </script>
 </body>

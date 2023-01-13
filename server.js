@@ -9,7 +9,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 
-
+var errors = 0
 
 
 
@@ -30,7 +30,7 @@ try {
     timeCost: 10
   });
   let post_hash_time = Date.now();
-  console.log((post_hash_time-pre_hash_time)/1000 + "s")
+  console.log("hash took " + (post_hash_time-pre_hash_time)/1000 + "s")
   return hash
 } 
 
@@ -44,9 +44,8 @@ async function validate_login(UP_Name, UP_Pass){
   let json = fs.readFileSync("test.json")
   let json_object = JSON.parse(json)
 
-  let hashed_pass = json_object[UP_Name].encrypted_pass
-
   try{
+    let hashed_pass = json_object[UP_Name].encrypted_pass
     if(await argon2.verify(hashed_pass, UP_Pass)){
     return "user login success"
     }
@@ -54,7 +53,7 @@ async function validate_login(UP_Name, UP_Pass){
     return "user login failure"  
   }}
   catch(err){
-    return "server internal error"
+    return "user does not exist"
   }
 }
 
@@ -77,7 +76,7 @@ app.post('/register',
     if (!validation_errors.isEmpty()){
       return res.status(400).json({
         success: false,
-        errors: errors.array(),
+        errors: validation_errors.array(),
         git: "gud"
       })
     }
@@ -88,42 +87,79 @@ app.post('/register',
   let User_email = req.body.email
   let User_pass = req.body.password 
 
-hash_it(User_pass).then(function(res){ 
-let encrypted_pass = res
-  // read and parse json file
-let json = fs.readFileSync("test.json")
-let json_object = JSON.parse(json)
+        // read and parse json file
+  let json = fs.readFileSync("test.json")
+  let json_object = JSON.parse(json)
 
 if(json_object.hasOwnProperty(User_name) !== true){
-  // save data intended for json object
-  let data = {User_email, encrypted_pass}
+  hash_it(User_pass).then(function(res){ 
+    let encrypted_pass = res
 
-  // insert data into pre-existing json data
-  json_object[User_name] = data
-
-  // write newly updated json data back into the file
-  fs.writeFileSync("test.json", JSON.stringify(json_object, null, " "))
-
-  return "success"
-  }
+      // save data intended for json object
+      let data = {User_email, encrypted_pass}
+    
+      // insert data into pre-existing json data
+      json_object[User_name] = data
+    
+      // write newly updated json data back into the file
+      fs.writeFileSync("test.json", JSON.stringify(json_object, null, " "))
+})}
 else{
-  console.log("name already exists")
-   return "name already exists"
+  return res.status(400).json({
+    success: false,
+    errors: "username is already in use",
+    git: "gud"
+  })
 }
-})
 
 // send acceptance code
 res.status(202).json( { success: true } )
 }
 )
   
-  
+app.post('/login',
+  body("name", "name should be at least 3 characters long").trim().isLength({ min: 3 }).escape(),
+  body("password", "Password is too short, min 6 characters").trim().isLength({min:6}).escape(),
 
+   async (req, res) => {
+    let validation_errors = validationResult(req)
+    if (!validation_errors.isEmpty()){
+      return res.status(400).json({
+        success: false,
+        errors: validation_errors.array(),
+        git: "gud"
+      })
+    }
+    
+    let User_name = req.body.name
+    let User_pass = req.body.password 
+
+    let login_attempt = await validate_login(User_name, User_pass)
+
+    if(login_attempt == "user login success"){
+      return res.status(200).json({
+        success: true,
+        status: login_attempt
+      })
+    }
+    else{
+      return res.status(400).json({
+        success: false,
+        status: login_attempt,
+        git: "gud"
+      })
+    }
+
+//await validate_login(User_name, User_pass)
+
+  }
+  )
 app.listen(port);
 console.log('Server started at http://localhost:' + port);
 
-console.log(await validate_login("test1", "password"))
-
 //todo, figure out how data input works https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/forms (x)
-//TODO: further valida input data, save validated data, implement "login" system ()
-//TODO: login: figure out how to return error if user tries to make account with pre-existing username
+//TODO: further valida input data, save validated data (x)
+//TODO: login: figure out how to return error if user tries to make account with pre-existing username (x)
+//TODO: figure out how to display error message on clientside (x)
+//TODO: implement "login" system (x)
+//TODO: make use of login system to set times interested in chess ()

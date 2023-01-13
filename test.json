@@ -1,1 +1,22 @@
-{ "name": "dog", "pass": "password123"}
+{
+ "test": {
+  "User_email": "email@email.com",
+  "encrypted_pass": "$argon2id$v=19$m=105360,t=10,p=7$1dW694uW5iVLPsV+RhUu4A$VcwDLBj7QabUS6e8UxNmTkGGz00Ki1lusQVJix4Bbbo"
+ },
+ "namn": {
+  "User_email": "email@email.com",
+  "encrypted_pass": "$argon2id$v=19$m=105360,t=10,p=7$iTNaXxA3j9PIU+sM6KMw7w$VW2DL/1qw4+aN36cUFYQ8LOvNPsKEne+UOTBODtcYoQ"
+ },
+ "namn3": {
+  "User_email": "email@email.com",
+  "encrypted_pass": "$argon2id$v=19$m=105360,t=10,p=7$iCI391hslzIxmqRitMWrAg$5gxZHQ2lLRsDiY9gPjsXItn1KY1gw816B2gb/PHQX04"
+ },
+ "pog": {
+  "User_email": "pog@pog.com",
+  "encrypted_pass": "$argon2id$v=19$m=105360,t=10,p=7$7k2XklZr/dyJVJn+KsXB1Q$mfUqMdn+RkmJe9pcFr6vzKQw7kd5WAqujA/1PvsOLHI"
+ },
+ "göran": {
+  "User_email": "göran@stress.com",
+  "encrypted_pass": "$argon2id$v=19$m=105360,t=10,p=7$9xx6ECtFfEyvpIODxi/QJA$bHaPR5tFsNF6jiZ69BbMd5Wb366ppoe96/lCJ8rlsVA"
+ }
+}
