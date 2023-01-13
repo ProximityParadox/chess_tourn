@@ -18,5 +18,17 @@
  "göran": {
   "User_email": "göran@stress.com",
   "encrypted_pass": "$argon2id$v=19$m=105360,t=10,p=7$9xx6ECtFfEyvpIODxi/QJA$bHaPR5tFsNF6jiZ69BbMd5Wb366ppoe96/lCJ8rlsVA"
+ },
+ "poggers": {
+  "User_email": "pog@email.com",
+  "encrypted_pass": "$argon2id$v=19$m=105360,t=10,p=7$kbaVDqpRFRPUsOuQru88Sw$ogn3ghM0fvah5GAQWfN8psGAPAbhjtv+eVb8Zgi1ph4"
+ },
+ "poggies": {
+  "User_email": "emailer@emailer.com",
+  "encrypted_pass": "$argon2id$v=19$m=105360,t=10,p=7$bQ/6E6WjtS9J84ITO6kyxA$VjtC7mVT05jAFSdvUENJu8IhWmJ+a2zUq17q0okZcmk"
+ },
+ "sheiber": {
+  "User_email": "sheiber@email.com",
+  "encrypted_pass": "$argon2id$v=19$m=105360,t=10,p=7$G1CtI4K5oeXpNvPkIoavNQ$Spx7JTYqDi2kURvDNsLdWkrRw3H1XXAhFKn5PD1kzSs"
  }
 }

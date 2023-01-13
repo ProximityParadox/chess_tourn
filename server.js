@@ -1,18 +1,12 @@
 import express, { json } from 'express';
 var app = express()
 import { join } from 'path';
-import test from "./test.json" assert {type: "json"};
 import fs, { readFileSync } from "fs";
 import { body, validationResult } from "express-validator";
 import argon2 from 'argon2';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
-
-var errors = 0
-
-
-
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -58,7 +52,7 @@ async function validate_login(UP_Name, UP_Pass){
     return "user login success"
     }
   else{
-    return "user login failure"  
+    return "username or password incorrect"  
   }}
   catch(err){
     return "user does not exist"
@@ -129,7 +123,7 @@ app.post('/login',
   body("name", "name should be at least 3 characters long").trim().isLength({ min: 3 }).escape(),
   body("password", "Password is too short, min 6 characters").trim().isLength({min:6}).escape(),
 
-   async (req, res, next) => {
+   async (req, res) => {
     let validation_errors = validationResult(req)
     if (!validation_errors.isEmpty()){
       return res.status(400).json({
@@ -142,40 +136,33 @@ app.post('/login',
     let User_name = req.body.name
     let User_pass = req.body.password 
 
-    let login_attempt = await validate_login(User_name, User_pass)
+    let status = await validate_login(User_name, User_pass)
 
-    
+      console.log(status)
 
-    if(login_attempt == "user login success"){
-
-      res.locals.username = User_name
-      next()
+      if(status == "user login success"){
+        //next()
+        return res.status(200).json({
+          status: "Success!"
+        })
+      }
+      else{
+        return res.status(400).json({
+          success: false,
+          status: status,
+          git: "gud"
+        })
+      }
     }
-    else{
-      return res.status(400).json({
-        success: false,
-        status: login_attempt,
-        git: "gud"
-      })
-    }
-},
 
-  async (req, res)=>{
-    req.session.loggedIn = true
-    req.session.username = res.locals.username
-    console.log(req.session)
-    res.redirect("/LoginSuccess")
-  }
+  //async (req, res)=>{
+    //req.session.loggedIn = true
+    //req.session.username = res.locals.username
+    //console.log(req.session)
+    //console.log("login was a success")  }
 
 )
-
-app.get("/LoginSuccess", function( req, res ){
-  if(req.session.loggedIn){
-  
-  //res.sendFile(join(__dirname, './public/scheduler.html'));
-  console.log("login was a success")}
-  //return res.status(200)
-})
+//console.log(await validate_login("pog", "pogpog"))
 
 app.listen(port);
 console.log('Server started at http://localhost:' + port);
