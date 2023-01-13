@@ -7,7 +7,7 @@ import { body, validationResult } from "express-validator";
 import argon2 from 'argon2';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
+import session from 'express-session';
 
 var errors = 0
 
@@ -40,6 +40,14 @@ catch (err) {
 }
 }
 
+
+app.use(session({
+  secret: "wlCOK66Eer5ayEJMfml6FjIVnEQxrTZWOelBIvqQDh1HKRd2xE06NtW2scetHm3GCcZPmBMFDx2ZqC37g9R1sgT65oZG4n21RYziFK6ItwjA4mK25GOI6x1uX0Nub2zBKKswbwE2fAe4brCheb7v2jtwURHHFaHJAbuUYR8iTya5vbLnF2HcbsK3ZLMp4DHXCJRdzfEv",
+  UniqueSessionID: Math.random()*10000000000000000,
+  resave: false,
+  saveUninitialized: false
+}))
+
 async function validate_login(UP_Name, UP_Pass){
   let json = fs.readFileSync("test.json")
   let json_object = JSON.parse(json)
@@ -62,7 +70,7 @@ app.use(json({extended: true, limit: '1mb'}))
 const port = process.env.PORT || 8080;
 
 app.get('/', function(req, res) {
-    res.sendFile(join(__dirname, './public/index.html'));
+  res.sendFile(join(__dirname, './public/index.html'));
     console.log("Successful client connection")
   });
 
@@ -121,7 +129,7 @@ app.post('/login',
   body("name", "name should be at least 3 characters long").trim().isLength({ min: 3 }).escape(),
   body("password", "Password is too short, min 6 characters").trim().isLength({min:6}).escape(),
 
-   async (req, res) => {
+   async (req, res, next) => {
     let validation_errors = validationResult(req)
     if (!validation_errors.isEmpty()){
       return res.status(400).json({
@@ -136,11 +144,12 @@ app.post('/login',
 
     let login_attempt = await validate_login(User_name, User_pass)
 
+    
+
     if(login_attempt == "user login success"){
-      return res.status(200).json({
-        success: true,
-        status: login_attempt
-      })
+
+      res.locals.username = User_name
+      next()
     }
     else{
       return res.status(400).json({
@@ -149,11 +158,25 @@ app.post('/login',
         git: "gud"
       })
     }
+},
 
-//await validate_login(User_name, User_pass)
-
+  async (req, res)=>{
+    req.session.loggedIn = true
+    req.session.username = res.locals.username
+    console.log(req.session)
+    res.redirect("/LoginSuccess")
   }
-  )
+
+)
+
+app.get("/LoginSuccess", function( req, res ){
+  if(req.session.loggedIn){
+  
+  //res.sendFile(join(__dirname, './public/scheduler.html'));
+  console.log("login was a success")}
+  //return res.status(200)
+})
+
 app.listen(port);
 console.log('Server started at http://localhost:' + port);
 
@@ -162,4 +185,6 @@ console.log('Server started at http://localhost:' + port);
 //TODO: login: figure out how to return error if user tries to make account with pre-existing username (x)
 //TODO: figure out how to display error message on clientside (x)
 //TODO: implement "login" system (x)
+//TODO: implement session and cookies %% UNSECURE (x)
+//TODO: figure out why the res.sendfile is not properly updating the webpage ()
 //TODO: make use of login system to set times interested in chess ()
