@@ -5,4 +5,4 @@
 6. save newely hashed string in json file(x)
 7. create login system to match user input to database(x)
 8. write proper readme ()
-combine both todos () (this one is outdated)
+combine this TODO with one in server.js
