@@ -52,7 +52,12 @@
         })
         try {
         await sent.json().then(function(res){
+            try{
+
+            //document.getElementById("failure_display_register").innerHTML = JSON.stringify(res.status)
             document.getElementById("failure_display_register").innerHTML = JSON.stringify(res.errors[0].msg)
+            }
+            catch{}
             })
         }
         catch(error){
@@ -83,10 +88,8 @@
         })
         try {
         await sent.json().then(function(res){
-
-            //console.log(res.errors[0].msg)
-
             try{
+
             document.getElementById("failure_display_login").innerHTML = JSON.stringify(res.status)
             document.getElementById("failure_display_login").innerHTML = JSON.stringify(res.errors[0].msg)
             }
