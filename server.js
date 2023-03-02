@@ -43,7 +43,6 @@ catch (err) {
 
 app.use(session({
   secret: "wlCOK66Eer5ayEJMfml6FjIVnEQxrTZWOelBIvqQDh1HKRd2xE06NtW2scetHm3GCcZPmBMFDx2ZqC37g9R1sgT65oZG4n21RYziFK6ItwjA4mK25GOI6x1uX0Nub2zBKKswbwE2fAe4brCheb7v2jtwURHHFaHJAbuUYR8iTya5vbLnF2HcbsK3ZLMp4DHXCJRdzfEv",
-  UniqueSessionID: Math.random()*10000000000000000,
   resave: false,
   saveUninitialized: false
 }))
@@ -163,6 +162,7 @@ app.post('/login',
   async (req, res)=>{
     req.session.loggedIn = true
     req.session.username = res.locals.username
+    req.session.UniqueSessionID = Math.random()*10000000000000000,
     console.log(req.session)
     res.redirect("/LoginSuccess")
   }
