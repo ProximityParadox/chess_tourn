@@ -148,8 +148,15 @@ app.post('/login',
     if(login_attempt == "user login success"){
 
       res.locals.username = User_name
-      next()
+    req.session.loggedIn = true
+    req.session.username = res.locals.username
+    req.session.UniqueSessionID = Math.random()*10000000000000000,
+    console.log(req.session)
+    return res.status(200).json({
+      proceed: true,
+      status: "success"})
     }
+
     else{
       return res.status(400).json({
         success: false,
@@ -158,20 +165,10 @@ app.post('/login',
       })
     }
 },
-
-  async (req, res)=>{
-    req.session.loggedIn = true
-    req.session.username = res.locals.username
-    req.session.UniqueSessionID = Math.random()*10000000000000000,
-    console.log(req.session)
-    res.redirect("/LoginSuccess")
-  }
-
 )
 
 app.get("/LoginSuccess", function( req, res ){
   if(req.session.loggedIn){
-  
   res.sendFile(join(__dirname, './public/scheduler.html'));
   console.log("login was a success")}
   //return res.status(200)

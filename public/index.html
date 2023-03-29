@@ -89,8 +89,12 @@
         try {
         await sent.json().then(function(res){
             try{
-
+                console.log("Pog")
             document.getElementById("failure_display_login").innerHTML = JSON.stringify(res.status)
+            console.log(JSON.stringify(res.proceed))
+            if((JSON.stringify(res.proceed))=="true"){
+                dogwater()
+            }
             document.getElementById("failure_display_login").innerHTML = JSON.stringify(res.errors[0].msg)
             }
             catch{}
@@ -103,6 +107,11 @@
 
     Handle_Login_Form_Data()
     })
+
+async function dogwater(){
+     await fetch('./LoginSuccess').then(function(res){
+     window.location.replace(res.url)}
+    )}
 
 
     </script>
