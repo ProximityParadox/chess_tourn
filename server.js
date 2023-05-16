@@ -29,7 +29,7 @@ try {
     memoryCost: 105360,
     timeCost: 10
   });
-  let post_hash_time = Date.now();
+  let post_hash_time = Date.now();  
   console.log("hash took " + (post_hash_time-pre_hash_time)/1000 + "s")
   return hash
 } 
@@ -40,11 +40,12 @@ catch (err) {
 }
 }
 
-
+app.use(express.static(path.join(__dirname, "public")));
+  
 app.use(session({
   secret: "wlCOK66Eer5ayEJMfml6FjIVnEQxrTZWOelBIvqQDh1HKRd2xE06NtW2scetHm3GCcZPmBMFDx2ZqC37g9R1sgT65oZG4n21RYziFK6ItwjA4mK25GOI6x1uX0Nub2zBKKswbwE2fAe4brCheb7v2jtwURHHFaHJAbuUYR8iTya5vbLnF2HcbsK3ZLMp4DHXCJRdzfEv",
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
 }))
 
 async function validate_login(UP_Name, UP_Pass){
@@ -73,6 +74,7 @@ app.get('/', function(req, res) {
     console.log("Successful client connection")
   });
 
+
 app.post('/register',
   body("name", "name should be at least 3 characters long").trim().isLength({ min: 3 }).escape(),
   body('email', "Not an email").isEmail().normalizeEmail(),
@@ -81,12 +83,13 @@ app.post('/register',
   (req, res) => {
     let validation_errors = validationResult(req)
     if (!validation_errors.isEmpty()){
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         errors: validation_errors.array(),
         git: "gud"
       })
     }
+
 
     
   console.log("Successful client data submission")
@@ -147,10 +150,12 @@ app.post('/login',
 
     if(login_attempt == "user login success"){
 
-      res.locals.username = User_name
+    res.locals.username = User_name
     req.session.loggedIn = true
     req.session.username = res.locals.username
-    req.session.UniqueSessionID = Math.random()*10000000000000000,
+    req.session.UniqueSessionID = Math.random()*10000000000000000,    
+    req.session.submitted_tourn = false
+
     console.log(req.session)
     return res.status(200).json({
       proceed: true,
@@ -158,7 +163,7 @@ app.post('/login',
     }
 
     else{
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         status: login_attempt,
         git: "gud"
@@ -174,6 +179,68 @@ app.get("/LoginSuccess", function( req, res ){
   //return res.status(200)
 })
 
+app.post('/sessiontest',function( req, res ){
+console.log(req.session)
+})
+
+app.post('/TournInfo', function( req, res){
+
+
+    if(req.session.submitted_tourn == false){
+
+
+  req.session.submitted_tourn = true
+
+  res.status(202).json( { success: true } )
+
+  let init_submitter = req.session.username
+
+
+  let json = fs.readFileSync("tourn_winners.json")
+  let json_object = JSON.parse(json)
+  let winner = req.body.winner
+  let time = req.body.time
+
+  try{
+  let submitter = json_object[winner]
+
+submitter.submitter = JSON.stringify(submitter + {["fucker"]: 1})
+
+console.log(json_object[winner])
+console.log(submitter.submitter)
+console.log(data1)
+
+
+
+  //Tourn_Winner_Write(winner, datatest, time, json_object)
+  }
+catch{
+  let submitter = {[init_submitter]: 1}
+  Tourn_Winner_Write(winner, submitter, time, json_object)
+  }
+
+
+
+
+}
+else{
+  res.status(208)
+}
+})
+
+function Tourn_Winner_Write(winner, submitter, time, json_object){
+
+        // save data intended for json object
+        let data = {submitter, time}
+    
+        // insert data into pre-existing json data
+        json_object[winner] = data
+      
+        // write newly updated json data back into the file
+        fs.writeFileSync("tourn_winners.json", JSON.stringify(json_object, null, " "))
+}
+
+
 app.listen(port);
 console.log('Server started at http://localhost:' + port);
 
@@ -183,5 +250,5 @@ console.log('Server started at http://localhost:' + port);
 //TODO: figure out how to display error message on clientside (x)
 //TODO: implement "login" system (x)
 //TODO: implement session and cookies %% UNSECURE (x)
-//TODO: figure out why the res.sendfile is not properly updating the webpage ()
+//TODO: figure out why the res.sendfile is not properly updating the webpage (x)
 //TODO: make use of login system to set times interested in chess ()

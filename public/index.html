@@ -71,6 +71,7 @@
     document.getElementById("submit_login").addEventListener("click", (e) =>{e.preventDefault()
         document.getElementById("submit_login").disabled = true
         setTimeout(function(){
+            
         document.getElementById("submit_login").disabled = false
     }, 3000)
     let name = document.getElementById("login_name").value
@@ -109,7 +110,7 @@
     })
 
 async function dogwater(){
-     await fetch('./LoginSuccess').then(function(res){
+     await fetch('/LoginSuccess').then(function(res){
      window.location.replace(res.url)}
     )}
 
