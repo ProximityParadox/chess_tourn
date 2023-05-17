@@ -28,6 +28,8 @@
         <br>
         <p id = "failure_display_login"></p>
     </div>
+
+    <div id = tournament_winners></div>
     
     <script>
 
@@ -53,7 +55,7 @@
         try {
         await sent.json().then(function(res){
             try{
-
+            
             //document.getElementById("failure_display_register").innerHTML = JSON.stringify(res.status)
             document.getElementById("failure_display_register").innerHTML = JSON.stringify(res.errors[0].msg)
             }
@@ -113,7 +115,65 @@ async function dogwater(){
      await fetch('/LoginSuccess').then(function(res){
      window.location.replace(res.url)}
     )}
+async function fetch_that_tourn_data(){
+let sent = await fetch("/tournament_stats_data")
+    await sent.json().then(function(res){
 
+
+let treatment = Object.entries(res)
+
+
+let list = []
+
+treatment.forEach(element => {
+    list.push(element[0])
+    element[1].forEach(element =>{
+        let a = Object.entries(element)[0][1]
+        list.push(a)
+    })
+});
+let newlist =[]
+let thirdlist = []
+
+
+list.forEach(element => {
+    if(typeof element !=="string"){
+        thirdlist.push(element)
+    }
+    else{
+        newlist.push(thirdlist.reduce((partialSum, a) => partialSum + a, 0))
+        thirdlist = []
+        newlist.push(element)
+
+    }
+});
+newlist.push(thirdlist.reduce((partialSum, a) => partialSum + a, 0))
+
+let fifthlist = newlist.slice(1)
+
+
+let maxNumber = Number.NEGATIVE_INFINITY;
+let resultString = null;
+
+for (let i = 0; i < fifthlist.length - 1; i++) {
+  if (typeof fifthlist[i] === 'string' && typeof fifthlist[i + 1] === 'number') {
+    if (fifthlist[i + 1] > maxNumber) {
+      maxNumber = fifthlist[i + 1];
+      resultString = fifthlist[i];
+    }
+  }
+}
+  console.log("String with the biggest number following it:", resultString);
+  console.log("Maximum number:", maxNumber);
+
+  document.getElementById("tournament_winners").innerHTML = ("recordholder is " + resultString + " and he has won " + maxNumber + " times")
+
+    })
+
+
+}
+
+fetch_that_tourn_data()
 
     </script>
 </body>

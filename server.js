@@ -183,6 +183,15 @@ app.post('/sessiontest',function( req, res ){
 console.log(req.session)
 })
 
+app.get("/tournament_stats_data", async function( req, res ){
+  console.log("tournament_stats_data requested")
+
+  let json = fs.readFileSync("tourn_winners.json")
+  let json_object = JSON.parse(json)
+ 
+  res.status(202).json( json_object )
+})
+
 app.post('/TournInfo', function( req, res){
 
 
@@ -201,26 +210,40 @@ app.post('/TournInfo', function( req, res){
   let winner = req.body.winner
   let time = req.body.time
 
-  try{
+
+
+
+  if(json_object[winner] !== undefined){
   let submitter = json_object[winner]
 
-submitter.submitter = JSON.stringify(submitter + {["fucker"]: 1})
-
-console.log(json_object[winner])
-console.log(submitter.submitter)
-console.log(data1)
+  console.log("this is submission with data in already")
 
 
+let previous_submission_detected = false
 
-  //Tourn_Winner_Write(winner, datatest, time, json_object)
+
+    submitter.forEach(element => {
+      if(element[init_submitter] !== undefined){
+        element[init_submitter]++
+        previous_submission_detected = true
+      }
+
+    });
+
+    if(previous_submission_detected == false){
+      let new_sub = {[init_submitter]: 1, time}
+      submitter.push(new_sub)
+    }
+
+
+  Tourn_Winner_Write(winner, submitter, json_object)
   }
-catch{
-  let submitter = {[init_submitter]: 1}
-  Tourn_Winner_Write(winner, submitter, time, json_object)
+else{
+  console.log("this is submission with no previous data")
+
+  let submitter = [{[init_submitter]: 1, time}]
+  Tourn_Winner_Write(winner, submitter, json_object)
   }
-
-
-
 
 }
 else{
@@ -228,14 +251,23 @@ else{
 }
 })
 
-function Tourn_Winner_Write(winner, submitter, time, json_object){
-
-        // save data intended for json object
-        let data = {submitter, time}
+function Tourn_Winner_Write(winner, submitter, json_object){
     
         // insert data into pre-existing json data
-        json_object[winner] = data
+        json_object[winner] = submitter
       
+  console.log("attempting to write data to file")
+
+
+
+
+submitter.forEach(element => {
+  let a = Object.values(element)[0]
+  console.log(a)
+});
+
+
+        //console.log (json_object[winner])
         // write newly updated json data back into the file
         fs.writeFileSync("tourn_winners.json", JSON.stringify(json_object, null, " "))
 }
@@ -251,4 +283,6 @@ console.log('Server started at http://localhost:' + port);
 //TODO: implement "login" system (x)
 //TODO: implement session and cookies %% UNSECURE (x)
 //TODO: figure out why the res.sendfile is not properly updating the webpage (x)
-//TODO: make use of login system to set times interested in chess ()
+//TODO: make use of login system to set times interested in chess (x)
+//TODO: make a visual tournament system (x)
+//TODO: hook up tournament system to a backend database to save winners (x)
