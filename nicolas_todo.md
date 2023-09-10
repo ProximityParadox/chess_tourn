@@ -3,8 +3,5 @@
 3. Validate and sanitized post requests(x)
 4. Combine user inputs (email and pass) into single string()
 5. Securely hash saved string with argon2id (x)
-6. save newely hashed string in json file()
-7. create login system to match user input to database()
-8. Skriv en ordentlig beskrivning för vad projektet ska vara i README.
-
-- Förslag: Konvertera projekt till mallen och använd ts.
+6. save newely hashed string in json file(x)
+7. create login system to match user input to database(x)
