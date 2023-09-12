@@ -1,0 +1,14 @@
+{
+ "pog": {
+  "User_email": "pogpog@pogpog.com",
+  "encrypted_pass": "$argon2id$v=19$m=105360,t=10,p=7$mt+DkreGZHzk4SwM+c0K3w$IuPBZGtB71VStvFd4rrNvS/klOKkBPcTLR1Pw2PNY7w"
+ },
+ "dogdog": {
+  "User_email": "dogdog@dogdog.com",
+  "encrypted_pass": "$argon2id$v=19$m=105360,t=10,p=7$tYuv8i66dhzLCzyuFiAKSA$a9MuelIQtsRlGPUNhN/xa+4W1MlV7VsPZbTWjG9YiX0"
+ },
+ "darkion": {
+  "User_email": "darkion@darkion.com",
+  "encrypted_pass": "$argon2id$v=19$m=105360,t=10,p=7$fJDTWTk1KDJRaiUFWkSJvA$Hq+kasryX5tKLjqOkwN7cLM88bIUoBYYAHTWphSkFN4"
+ }
+}
