@@ -1,7 +1,8 @@
 import argon2 from 'argon2';
 import fs, { readFileSync } from "fs";
 
-
+// Goal with hashing.js is to give the main server a way to both securely hash a provided password
+// and validate any userprovided login credentials safely.
 
 export async function hash_it(UP_Pass){
     try {
